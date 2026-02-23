@@ -77,7 +77,7 @@ const generatePersonalizedContractFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedContractOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    const response = await prompt(input);
+    return response.output!;
   }
 );
