@@ -9,7 +9,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
 const GenerateInterviewSummaryAndScoreInputSchema = z.object({
   transcript: z.string().describe('The full transcript of the AI interview.'),

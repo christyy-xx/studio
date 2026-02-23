@@ -8,7 +8,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const GenerateStructuredJobPostInputSchema = z.object({
   rawJobDescription: z
@@ -66,7 +66,7 @@ Take the following raw job description and transform it into a structured job po
 Ensure all sections are populated based on the provided text, and if a section is not explicitly mentioned but can be inferred (like application instructions if not present, create a generic one), please do so. If preferred qualifications or benefits are not mentioned, they can be omitted.
 
 Raw Job Description:
-{{rawJobDescription}}`,
+{{{rawJobDescription}}}`,
 });
 
 const generateStructuredJobPostFlow = ai.defineFlow(
