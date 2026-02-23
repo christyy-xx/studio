@@ -38,13 +38,17 @@ export function JobPostingForm() {
       const output = await generateStructuredJobPost({ rawJobDescription: values.rawJobDescription });
       setResult(output);
 
-      await fetch('https://likah123.app.n8n.cloud/webhook-test/firebase-job-post', {
+      const response = await fetch('/api/webhook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(output),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to send data to webhook.');
+      }
 
       toast({
         title: "Success!",
@@ -55,7 +59,7 @@ export function JobPostingForm() {
       toast({
         variant: 'destructive',
         title: 'An error occurred.',
-        description: 'Failed to generate job post or send to webhook. Please try again.',
+        description: (error instanceof Error) ? error.message : 'Failed to generate job post or send to webhook. Please try again.',
       });
     } finally {
       setIsLoading(false);
