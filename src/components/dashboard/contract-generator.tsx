@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -33,7 +34,12 @@ const formSchema = z.object({
 export function ContractGenerator() {
   const [generatedContract, setGeneratedContract] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -148,13 +154,15 @@ export function ContractGenerator() {
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date() || date < new Date('1900-01-01')}
-                          initialFocus
-                        />
+                        {isClient && (
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date() || date < new Date('1900-01-01')}
+                            initialFocus
+                          />
+                        )}
                       </PopoverContent>
                     </Popover>
                     <FormMessage />
