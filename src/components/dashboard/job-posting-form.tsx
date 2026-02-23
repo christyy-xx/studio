@@ -37,16 +37,25 @@ export function JobPostingForm() {
     try {
       const output = await generateStructuredJobPost({ rawJobDescription: values.rawJobDescription });
       setResult(output);
+
+      await fetch('https://likah123.app.n8n.cloud/webhook-test/firebase-job-post', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(output),
+      });
+
       toast({
         title: "Success!",
-        description: "Structured job post generated.",
+        description: "Structured job post generated and sent to webhook.",
       });
     } catch (error) {
       console.error(error);
       toast({
         variant: 'destructive',
         title: 'An error occurred.',
-        description: 'Failed to generate job post. Please try again.',
+        description: 'Failed to generate job post or send to webhook. Please try again.',
       });
     } finally {
       setIsLoading(false);
