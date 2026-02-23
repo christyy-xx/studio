@@ -59,7 +59,7 @@ const prompt = ai.definePrompt({
 **Candidate Details:**
 Candidate Name: {{{candidateName}}}
 Job Title: {{{jobTitle}}}
-Annual Salary: ${{{salary}}}
+Annual Salary: {{{salary}}}
 Start Date: {{{startDate}}}
 
 **Additional Clauses (if any):**
@@ -77,7 +77,7 @@ const generatePersonalizedContractFlow = ai.defineFlow(
     outputSchema: GeneratePersonalizedContractOutputSchema,
   },
   async input => {
-    const response = await prompt(input);
-    return response.output!;
+    const {output} = await prompt(input);
+    return output!;
   }
 );
