@@ -198,7 +198,21 @@ const Sidebar = React.forwardRef<
     }
 
     if (!mounted) {
-      return null
+      return (
+        <div
+          ref={ref}
+          className="group peer hidden md:block text-sidebar-foreground"
+        >
+          <div
+            className={cn(
+              "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
+              variant === "floating" || variant === "inset"
+                ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
+                : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]"
+            )}
+          />
+        </div>
+      );
     }
 
     if (isMobile) {
@@ -325,10 +339,10 @@ SidebarRail.displayName = "SidebarRail"
 
 const SidebarInset = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"main">
+  React.ComponentProps<"div">
 >(({ className, ...props }, ref) => {
   return (
-    <main
+    <div
       ref={ref}
       className={cn(
         "relative flex min-h-svh flex-1 flex-col bg-background",
