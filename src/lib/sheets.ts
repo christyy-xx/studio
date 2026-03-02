@@ -3,7 +3,7 @@ import { JWT } from 'google-auth-library';
 import type { Candidate } from './types';
 
 // The spreadsheet must be shared with the client_email of the service account.
-const SPREADSHEET_ID = '13Hf1J3hpp_1vORp1yc7-qQE3AqlPJWVY4jS4KkDTFKM';
+const SPREADSHEET_ID = '1nfJkPy5uxUSj9Oem_phfh4NuAsC1WdNEV07uGmonsMk';
 const SHEET_TITLE = 'Sheet1'; // The default sheet name is often Sheet1
 
 export async function getCandidatesFromSheet(): Promise<Candidate[]> {
