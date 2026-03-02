@@ -5,13 +5,18 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Send } from 'lucide-react';
+import type { Interview, WebhookInterviewResult } from '@/lib/types';
+import { InterviewCard } from '@/components/dashboard/interview-card';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function InterviewsPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [interviews, setInterviews] = useState<Interview[]>([]);
   const { toast } = useToast();
 
   const handleRequestData = async () => {
     setIsLoading(true);
+    setInterviews([]);
     try {
       const response = await fetch('/api/webhook', {
         method: 'POST',
@@ -26,11 +31,32 @@ export default function InterviewsPage() {
         throw new Error(errorText || 'Webhook request failed.');
       }
 
-      await response.text();
+      const responseData = await response.json();
+      const candidates: WebhookInterviewResult[] = responseData.Candidates || [];
+
+      if (!candidates || candidates.length === 0) {
+        toast({
+            title: "No data returned",
+            description: "The webhook returned an empty list of candidates.",
+        });
+        setInterviews([]);
+        return;
+      }
+      
+      const formattedInterviews: Interview[] = candidates.map((candidate, index) => ({
+        id: String(index + 1),
+        candidateName: candidate['Candidate Name'],
+        candidateAvatarUrl: PlaceHolderImages[index % PlaceHolderImages.length].imageUrl,
+        status: 'Completed', // Assuming all results are for completed interviews
+        performanceScore: candidate['Fit Score'],
+        summary: candidate['Summary'],
+      }));
+      
+      setInterviews(formattedInterviews);
 
       toast({
-        title: "Request Sent!",
-        description: "Successfully requested interview result data from the webhook.",
+        title: "Data Received!",
+        description: "Successfully fetched interview result data from the webhook.",
       });
     } catch (error) {
       console.error(error);
@@ -57,7 +83,7 @@ export default function InterviewsPage() {
       <header>
         <h1 className="text-3xl font-bold tracking-tight">AI Interview Results</h1>
         <p className="text-muted-foreground">
-          Request the latest interview result data from your sources via webhook.
+          Review AI-powered summaries and performance scores for candidate interviews.
         </p>
       </header>
 
@@ -65,7 +91,7 @@ export default function InterviewsPage() {
         <CardHeader>
           <CardTitle>Trigger Data Fetch</CardTitle>
           <CardDescription>
-            Click the button below to send a request to your n8n webhook. This can be used to trigger a workflow to fetch and process interview result data.
+            Click the button below to send a request to your n8n webhook to fetch and process interview result data.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -79,6 +105,20 @@ export default function InterviewsPage() {
           </Button>
         </CardContent>
       </Card>
+
+      {isLoading && (
+         <div className="flex items-center justify-center h-40">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
+      {interviews.length > 0 && (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {interviews.map(interview => (
+            <InterviewCard key={interview.id} interview={interview} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

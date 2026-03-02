@@ -34,3 +34,11 @@ export type WebhookCandidate = {
   'Fit Score': number;
   'Shortlisted': string | boolean;
 };
+
+export type WebhookInterviewResult = {
+  'Candidate Name': string;
+  'Fit Score': number;
+  'Technical Score': number;
+  'Communication Score': number;
+  'Summary': string;
+};
