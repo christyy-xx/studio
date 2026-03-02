@@ -1,4 +1,4 @@
-import { GoogleSpreadsheet } from 'google-spreadsheet';
+import { GoogleSpreadsheet, type GoogleSpreadsheetRow } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 import type { Candidate } from './types';
 
@@ -48,10 +48,28 @@ export async function getCandidatesFromSheet(): Promise<Candidate[]> {
   await sheet.loadHeaderRow(); // Make sure headers are loaded
   const rows = await sheet.getRows();
 
+  // Create a map of normalized header to original header to handle variations in naming (e.g. "Resume Score" vs "resumescore")
+  const headerMap = new Map<string, string>();
+  for (const header of sheet.headerValues) {
+    const normalized = header.toLowerCase().replace(/\s/g, '');
+    if (!headerMap.has(normalized)) {
+        headerMap.set(normalized, header);
+    }
+  }
+
+  const getByNormalizedHeader = (row: GoogleSpreadsheetRow<any>, normalizedHeader: string): any => {
+    const originalHeader = headerMap.get(normalizedHeader);
+    if (originalHeader) {
+        return row.get(originalHeader);
+    }
+    return undefined;
+  }
+
   const candidates: Candidate[] = rows
     .map((row) => {
-      const resumeScore = parseInt(row.get('resumeScore'), 10);
-      const status = row.get('status');
+      const resumeScoreRaw = getByNormalizedHeader(row, 'resumescore') || '0';
+      const resumeScore = parseInt(resumeScoreRaw, 10);
+      const status = getByNormalizedHeader(row, 'status');
       const validStatuses: Candidate['status'][] = [
         'Shortlisted',
         'Interviewing',
@@ -61,9 +79,9 @@ export async function getCandidatesFromSheet(): Promise<Candidate[]> {
       ];
 
       return {
-        id: String(row.get('id') ?? ''),
-        name: String(row.get('name') ?? ''),
-        avatarUrl: String(row.get('avatarUrl') ?? ''),
+        id: String(getByNormalizedHeader(row, 'id') ?? ''),
+        name: String(getByNormalizedHeader(row, 'name') ?? ''),
+        avatarUrl: String(getByNormalizedHeader(row, 'avatarurl') ?? ''),
         resumeScore: isNaN(resumeScore) ? 0 : resumeScore,
         status: validStatuses.includes(status) ? status : 'Shortlisted',
       };
