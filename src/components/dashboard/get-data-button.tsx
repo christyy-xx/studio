@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 import { Loader2, Send } from 'lucide-react';
+import type { WebhookCandidate } from '@/lib/types';
 
-export function GetDataButton() {
-  const [isLoading, setIsLoading] = useState(false);
+interface GetDataButtonProps {
+  onDataReceived: (data: WebhookCandidate[]) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  isLoading: boolean;
+}
+
+export function GetDataButton({ onDataReceived, setIsLoading, isLoading }: GetDataButtonProps) {
   const { toast } = useToast();
 
   const handleGetData = async () => {
     setIsLoading(true);
+    onDataReceived([]); // Clear previous data
     try {
       const response = await fetch('/api/webhook', {
         method: 'POST',
@@ -20,29 +26,23 @@ export function GetDataButton() {
         body: JSON.stringify({ event: 'get-data-trigger' }),
       });
 
-      let responseMessage = "Webhook triggered successfully.";
-      let responseTitle = "Webhook Request Sent!";
-      
-      try {
-        const responseData = await response.json();
-        responseMessage = JSON.stringify(responseData, null, 2);
-      } catch (e) {
-        const textResponse = await response.text();
-        if (textResponse) {
-          responseMessage = textResponse;
-        }
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Webhook request failed.');
       }
 
-      if (!response.ok) {
-        throw new Error(responseMessage);
-      }
+      const responseData = await response.json();
+      
+      const dataArray = Array.isArray(responseData) ? responseData : [responseData];
+      onDataReceived(dataArray);
 
       toast({
-        title: responseTitle,
-        description: <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4"><code className="text-white">{responseMessage}</code></pre>,
+        title: "Data Received!",
+        description: "Successfully fetched data from the webhook.",
       });
     } catch (error) {
       console.error(error);
+      onDataReceived([]); // Clear data on error
       toast({
         variant: 'destructive',
         title: 'An error occurred.',
