@@ -30,7 +30,7 @@ export type Notification = {
 };
 
 export type WebhookCandidate = {
-  Name: string;
-  Resume_Score: number;
-  Status: string;
+  'Candidate Name': string;
+  'Fit Score': number;
+  'Shortlisted': string | boolean;
 };

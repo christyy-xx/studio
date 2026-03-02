@@ -25,21 +25,21 @@ export function WebhookDataTable({ data }: { data: WebhookCandidate[] }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead className="text-center">Resume Score</TableHead>
-            <TableHead className="text-center">Status</TableHead>
+            <TableHead>Candidate Name</TableHead>
+            <TableHead className="text-center">Fit Score</TableHead>
+            <TableHead className="text-center">Shortlisted</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data.map((candidate, index) => (
             <TableRow key={index}>
               <TableCell>
-                <span className="font-medium">{candidate.Name}</span>
+                <span className="font-medium">{candidate['Candidate Name']}</span>
               </TableCell>
-              <TableCell className="text-center">{candidate.Resume_Score}</TableCell>
+              <TableCell className="text-center">{candidate['Fit Score']}</TableCell>
               <TableCell className="text-center">
                 <Badge variant="secondary">
-                  {candidate.Status}
+                  {String(candidate['Shortlisted'])}
                 </Badge>
               </TableCell>
             </TableRow>
