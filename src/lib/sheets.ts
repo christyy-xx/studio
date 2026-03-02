@@ -28,6 +28,7 @@ export async function getCandidatesFromSheet(): Promise<Candidate[]> {
     throw new Error(`Sheet with title "${SHEET_TITLE}" not found.`);
   }
 
+  await sheet.loadHeaderRow();
   const rows = await sheet.getRows();
 
   const candidates: Candidate[] = rows
@@ -43,9 +44,9 @@ export async function getCandidatesFromSheet(): Promise<Candidate[]> {
       ];
 
       return {
-        id: row.get('id') || '',
-        name: row.get('name') || '',
-        avatarUrl: row.get('avatarUrl') || '',
+        id: String(row.get('id') ?? ''),
+        name: String(row.get('name') ?? ''),
+        avatarUrl: String(row.get('avatarUrl') ?? ''),
         resumeScore: isNaN(resumeScore) ? 0 : resumeScore,
         status: validStatuses.includes(status) ? status : 'Shortlisted',
       };
