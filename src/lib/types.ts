@@ -9,9 +9,10 @@ export type Candidate = {
 export type Interview = {
   id: string;
   candidateName: string;
-  candidateAvatarUrl: string;
   status: 'Scheduled' | 'Completed' | 'Canceled';
   performanceScore: number;
+  technicalScore: number;
+  communicationScore: number;
   summary: string;
 };
 

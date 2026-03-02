@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, Send } from 'lucide-react';
 import type { Interview, WebhookInterviewResult } from '@/lib/types';
 import { InterviewCard } from '@/components/dashboard/interview-card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function InterviewsPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,9 +45,10 @@ export default function InterviewsPage() {
       const formattedInterviews: Interview[] = candidates.map((candidate, index) => ({
         id: String(index + 1),
         candidateName: candidate['Candidate Name'],
-        candidateAvatarUrl: PlaceHolderImages[index % PlaceHolderImages.length].imageUrl,
         status: 'Completed', // Assuming all results are for completed interviews
         performanceScore: candidate['Fit Score'],
+        technicalScore: candidate['Technical Score'],
+        communicationScore: candidate['Communication Score'],
         summary: candidate['Summary'],
       }));
       

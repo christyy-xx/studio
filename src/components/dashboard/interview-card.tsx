@@ -1,6 +1,5 @@
 import type { Interview } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
@@ -13,11 +12,7 @@ const statusColors: { [key in Interview['status']]: 'default' | 'secondary' | 'd
 export function InterviewCard({ interview }: { interview: Interview }) {
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex flex-row items-center gap-4">
-        <Avatar>
-          <AvatarImage src={interview.candidateAvatarUrl} alt={interview.candidateName} />
-          <AvatarFallback>{interview.candidateName.charAt(0)}</AvatarFallback>
-        </Avatar>
+      <CardHeader>
         <div className="grid gap-1">
           <CardTitle>{interview.candidateName}</CardTitle>
           <CardDescription>
@@ -28,11 +23,27 @@ export function InterviewCard({ interview }: { interview: Interview }) {
       <CardContent className="flex-1 grid gap-4">
         {interview.status === 'Completed' ? (
           <>
-            <div>
-              <h4 className="text-sm font-medium mb-2">Performance Score</h4>
-              <div className="flex items-center gap-2">
-                <Progress value={interview.performanceScore} className="w-full" />
-                <span className="font-semibold">{interview.performanceScore}%</span>
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-medium mb-2">Fit Score</h4>
+                <div className="flex items-center gap-2">
+                  <Progress value={interview.performanceScore} className="w-full" />
+                  <span className="font-semibold">{interview.performanceScore}%</span>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium mb-2">Technical Score</h4>
+                <div className="flex items-center gap-2">
+                  <Progress value={interview.technicalScore} className="w-full" />
+                  <span className="font-semibold">{interview.technicalScore}%</span>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium mb-2">Communication Score</h4>
+                <div className="flex items-center gap-2">
+                  <Progress value={interview.communicationScore} className="w-full" />
+                  <span className="font-semibold">{interview.communicationScore}%</span>
+                </div>
               </div>
             </div>
             <div>

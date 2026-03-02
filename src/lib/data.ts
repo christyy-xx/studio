@@ -7,25 +7,28 @@ export const interviews: Interview[] = [
   {
     id: '1',
     candidateName: 'Aarav Sharma',
-    candidateAvatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc3MTc2NTQ2NXww&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Completed',
     performanceScore: 85,
+    technicalScore: 90,
+    communicationScore: 80,
     summary: 'Strong technical skills but needs to improve on situational questions. Good fit for the team culture.'
   },
   {
     id: '2',
     candidateName: 'Priya Patel',
-    candidateAvatarUrl: 'https://images.unsplash.com/photo-1548544149-4835e62ee5b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc3MTc2NTQ2NXww&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Scheduled',
     performanceScore: 0,
+    technicalScore: 0,
+    communicationScore: 0,
     summary: 'Interview scheduled for next week.'
   },
   {
     id: '3',
     candidateName: 'Rohan Gupta',
-    candidateAvatarUrl: 'https://images.unsplash.com/photo-1599566147214-ce487862ea4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc3MTc2NTQ2NXww&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Completed',
     performanceScore: 95,
+    technicalScore: 92,
+    communicationScore: 98,
     summary: 'Excellent communication and problem-solving abilities. Highly recommended for the role.'
   }
 ];
