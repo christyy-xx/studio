@@ -1,24 +1,13 @@
 import type { Candidate, Interview, TimesheetEntry, Notification } from './types';
-import { PlaceHolderImages } from './placeholder-images';
 
-const getAvatarUrl = (seed: string) => {
-  const image = PlaceHolderImages.find(img => img.imageUrl.includes(seed));
-  return image ? image.imageUrl : 'https://picsum.photos/seed/placeholder/100/100';
-};
-
-export const candidates: Candidate[] = [
-  { id: '1', name: 'Aarav Sharma', avatarUrl: getAvatarUrl('avatar1'), resumeScore: 92, status: 'Interviewing' },
-  { id: '2', name: 'Priya Patel', avatarUrl: getAvatarUrl('avatar2'), resumeScore: 88, status: 'Shortlisted' },
-  { id: '3', name: 'Rohan Gupta', avatarUrl: getAvatarUrl('avatar3'), resumeScore: 95, status: 'Offered' },
-  { id: '4', name: 'Sneha Reddy', avatarUrl: getAvatarUrl('avatar4'), resumeScore: 85, status: 'Hired' },
-  { id: '5', name: 'Vikram Singh', avatarUrl: getAvatarUrl('avatar5'), resumeScore: 78, status: 'Rejected' },
-];
+// Candidate data is now fetched from Google Sheets.
+// The `candidates` export has been removed from this file.
 
 export const interviews: Interview[] = [
   {
     id: '1',
     candidateName: 'Aarav Sharma',
-    candidateAvatarUrl: getAvatarUrl('avatar1'),
+    candidateAvatarUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc3MTc2NTQ2NXww&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Completed',
     performanceScore: 85,
     summary: 'Strong technical skills but needs to improve on situational questions. Good fit for the team culture.'
@@ -26,7 +15,7 @@ export const interviews: Interview[] = [
   {
     id: '2',
     candidateName: 'Priya Patel',
-    candidateAvatarUrl: getAvatarUrl('avatar2'),
+    candidateAvatarUrl: 'https://images.unsplash.com/photo-1548544149-4835e62ee5b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc3MTc2NTQ2NXww&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Scheduled',
     performanceScore: 0,
     summary: 'Interview scheduled for next week.'
@@ -34,7 +23,7 @@ export const interviews: Interview[] = [
   {
     id: '3',
     candidateName: 'Rohan Gupta',
-    candidateAvatarUrl: getAvatarUrl('avatar3'),
+    candidateAvatarUrl: 'https://images.unsplash.com/photo-1599566147214-ce487862ea4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc3MTc2NTQ2NXww&ixlib=rb-4.1.0&q=80&w=1080',
     status: 'Completed',
     performanceScore: 95,
     summary: 'Excellent communication and problem-solving abilities. Highly recommended for the role.'

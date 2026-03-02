@@ -1,6 +1,8 @@
 import { ContractGenerator } from "@/components/dashboard/contract-generator";
+import { getCandidatesFromSheet } from "@/lib/sheets";
 
-export default function ContractsPage() {
+export default async function ContractsPage() {
+  const candidates = await getCandidatesFromSheet();
   return (
     <div className="space-y-6">
       <header>
@@ -10,7 +12,7 @@ export default function ContractsPage() {
         </p>
       </header>
       <div className="animate-fade-in">
-        <ContractGenerator />
+        <ContractGenerator candidates={candidates} />
       </div>
     </div>
   );

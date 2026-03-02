@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { generatePersonalizedContract } from '@/ai/flows/generate-personalized-contract';
-import { contractTemplate, candidates } from '@/lib/data';
+import { contractTemplate } from '@/lib/data';
+import type { Candidate } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
@@ -31,7 +32,7 @@ const formSchema = z.object({
   additionalClauses: z.string().optional(),
 });
 
-export function ContractGenerator() {
+export function ContractGenerator({ candidates }: { candidates: Candidate[] }) {
   const [generatedContract, setGeneratedContract] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);

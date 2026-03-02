@@ -8,10 +8,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { candidates } from "@/lib/data";
+import { getCandidatesFromSheet } from "@/lib/sheets";
 import { NotificationsPanel } from "@/components/dashboard/notifications-panel";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const candidates = await getCandidatesFromSheet();
   const totalCandidates = candidates.length;
   const hiredCandidates = candidates.filter(c => c.status === 'Hired').length;
   const interviewingCandidates = candidates.filter(c => c.status === 'Interviewing').length;
