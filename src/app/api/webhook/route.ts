@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const webhookUrl = 'https://likah123.app.n8n.cloud/webhook-test/firebase-job-post';
+    const webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/24b249fc-5bc7-43ef-ad88-be26ab7f4dbd';
 
     const response = await fetch(webhookUrl, {
       method: 'POST',
