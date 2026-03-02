@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     // Differentiate based on the payload structure
     if (body.event === 'get-data-trigger') {
       // This is for the "Candidates" page
-      webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/24b249fc-5bc7-43ef-ad88-be26ab7f4dbd';
+      webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/candidate';
     } else {
       // This is for the "Job Posting" page
       webhookUrl = 'https://likah123.app.n8n.cloud/webhook-test/firebase-job-post';
