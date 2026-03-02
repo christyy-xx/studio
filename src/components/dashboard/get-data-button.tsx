@@ -33,8 +33,8 @@ export function GetDataButton({ onDataReceived, setIsLoading, isLoading }: GetDa
 
       const responseData = await response.json();
       
-      const dataArray = Array.isArray(responseData) ? responseData : [responseData];
-      onDataReceived(dataArray);
+      const candidates = responseData.Candidates || [];
+      onDataReceived(candidates);
 
       toast({
         title: "Data Received!",

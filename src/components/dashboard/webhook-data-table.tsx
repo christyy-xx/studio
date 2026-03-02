@@ -38,8 +38,8 @@ export function WebhookDataTable({ data }: { data: WebhookCandidate[] }) {
               </TableCell>
               <TableCell className="text-center">{candidate.Resume_Score}</TableCell>
               <TableCell className="text-center">
-                <Badge variant={candidate.Status ? 'default' : 'destructive'}>
-                  {candidate.Status ? 'Active' : 'Inactive'}
+                <Badge variant="secondary">
+                  {candidate.Status}
                 </Badge>
               </TableCell>
             </TableRow>

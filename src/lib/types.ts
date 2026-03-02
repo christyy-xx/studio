@@ -32,5 +32,5 @@ export type Notification = {
 export type WebhookCandidate = {
   Name: string;
   Resume_Score: number;
-  Status: boolean;
+  Status: string;
 };
