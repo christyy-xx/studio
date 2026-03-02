@@ -10,9 +10,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCandidatesFromSheet } from "@/lib/sheets";
 import { NotificationsPanel } from "@/components/dashboard/notifications-panel";
+import type { Candidate } from "@/lib/types";
 
 export default async function DashboardPage() {
-  const candidates = await getCandidatesFromSheet();
+  let candidates: Candidate[] = [];
+  try {
+    candidates = await getCandidatesFromSheet();
+  } catch (error) {
+    console.error("Dashboard: Failed to fetch candidates from Google Sheet.", error);
+    // On error, we'll just display 0 for stats on the dashboard.
+    // A more detailed error is shown on the Candidates page.
+  }
+
   const totalCandidates = candidates.length;
   const hiredCandidates = candidates.filter(c => c.status === 'Hired').length;
   const interviewingCandidates = candidates.filter(c => c.status === 'Interviewing').length;
