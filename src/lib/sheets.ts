@@ -3,10 +3,19 @@ import { JWT } from 'google-auth-library';
 import type { Candidate } from './types';
 
 // The spreadsheet must be shared with the client_email of the service account.
-const SPREADSHEET_ID = '1nfJkPy5uxUSj9Oem_phfh4NuAsC1WdNEV07uGmonsMk';
+// Please replace this with your actual Spreadsheet ID.
+// You can find it in the URL of your Google Sheet, for example:
+// https://docs.google.com/spreadsheets/d/THIS_IS_THE_ID/edit
+const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
 const SHEET_TITLE = 'Sheet1'; // The default sheet name is often Sheet1
 
 export async function getCandidatesFromSheet(): Promise<Candidate[]> {
+  if (SPREADSHEET_ID === 'YOUR_SPREADSHEET_ID_HERE' || !SPREADSHEET_ID) {
+    throw new Error(
+      "Please set your Google Spreadsheet ID in `src/lib/sheets.ts`. You can find the ID in your sheet's URL."
+    );
+  }
+  
   if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY) {
     throw new Error(
       'Google Sheets credentials (GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY) are not set in your .env file. Please add them to connect to your sheet.'
@@ -21,11 +30,19 @@ export async function getCandidatesFromSheet(): Promise<Candidate[]> {
 
   const doc = new GoogleSpreadsheet(SPREADSHEET_ID, serviceAccountAuth);
 
-  await doc.loadInfo();
+  try {
+    await doc.loadInfo();
+  } catch (e: any) {
+    if (e.response?.status === 404) {
+      throw new Error(`Could not find a Google Sheet with ID "${SPREADSHEET_ID}". Please check the ID and that you have shared the sheet with the service account email.`);
+    }
+    throw e;
+  }
+
   const sheet = doc.sheetsByTitle[SHEET_TITLE];
 
   if (!sheet) {
-    throw new Error(`Sheet with title "${SHEET_TITLE}" not found.`);
+    throw new Error(`Sheet with title "${SHEET_TITLE}" not found in the spreadsheet. Please check the sheet name.`);
   }
 
   await sheet.loadHeaderRow();
