@@ -10,6 +10,9 @@ export async function POST(request: Request) {
     if (body.event === 'get-data-trigger') {
       // This is for the "Candidates" page
       webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/candidate';
+    } else if (body.event === 'get-interview-data-trigger') {
+        // This is for the "AI Interviews" page
+        webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/candidate-result';
     } else {
       // This is for the "Job Posting" page
       webhookUrl = 'https://likah123.app.n8n.cloud/webhook-test/firebase-job-post';
