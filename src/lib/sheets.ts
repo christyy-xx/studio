@@ -6,7 +6,7 @@ import type { Candidate } from './types';
 // Please replace this with your actual Spreadsheet ID.
 // You can find it in the URL of your Google Sheet, for example:
 // https://docs.google.com/spreadsheets/d/THIS_IS_THE_ID/edit
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
+const SPREADSHEET_ID = '1nfJkPy5uxUSj9Oem_phfh4NuAsC1WdNEV07uGmonsMk';
 const SHEET_TITLE = 'Sheet1'; // The default sheet name is often Sheet1
 
 export async function getCandidatesFromSheet(): Promise<Candidate[]> {
@@ -45,7 +45,7 @@ export async function getCandidatesFromSheet(): Promise<Candidate[]> {
     throw new Error(`Sheet with title "${SHEET_TITLE}" not found in the spreadsheet. Please check the sheet name.`);
   }
 
-  await sheet.loadHeaderRow();
+  await sheet.loadHeaderRow(); // Make sure headers are loaded
   const rows = await sheet.getRows();
 
   const candidates: Candidate[] = rows
