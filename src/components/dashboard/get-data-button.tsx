@@ -43,10 +43,18 @@ export function GetDataButton({ onDataReceived, setIsLoading, isLoading }: GetDa
     } catch (error) {
       console.error(error);
       onDataReceived([]); // Clear data on error
+      let description = 'Could not trigger webhook. Please try again.';
+      if (error instanceof Error) {
+        if (error.message.includes('404')) {
+            description = 'The webhook returned a 404 Not Found error. Please check that the URL is correct and the webhook is active.'
+        } else {
+            description = error.message;
+        }
+      }
       toast({
         variant: 'destructive',
         title: 'An error occurred.',
-        description: (error instanceof Error) ? error.message : 'Could not trigger webhook. Please try again.',
+        description: description,
       });
     } finally {
       setIsLoading(false);
