@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/Employee';
     } else {
       // This is for the "Job Posting" page
-      webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/firebase-job-post';
+      webhookUrl = 'https://abu.awsaibot.com/webhook-test/firebase-job-post';
     }
 
     const response = await fetch(webhookUrl, {
