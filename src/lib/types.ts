@@ -19,8 +19,9 @@ export type Interview = {
 export type TimesheetEntry = {
   id: string;
   date: string;
-  task: string;
-  duration: string;
+  eventTitle: string;
+  startTime: string;
+  endTime: string;
 };
 
 export type Notification = {

@@ -15,8 +15,9 @@ export function TimesheetTable({ entries }: { entries: TimesheetEntry[] }) {
         <TableHeader>
           <TableRow>
             <TableHead>Date</TableHead>
-            <TableHead>Task</TableHead>
-            <TableHead className="text-right">Duration</TableHead>
+            <TableHead>Event Title</TableHead>
+            <TableHead>Start Time</TableHead>
+            <TableHead>End Time</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -24,13 +25,14 @@ export function TimesheetTable({ entries }: { entries: TimesheetEntry[] }) {
             entries.map((entry) => (
               <TableRow key={entry.id}>
                 <TableCell className="font-medium">{entry.date}</TableCell>
-                <TableCell>{entry.task}</TableCell>
-                <TableCell className="text-right">{entry.duration}</TableCell>
+                <TableCell>{entry.eventTitle}</TableCell>
+                <TableCell>{entry.startTime}</TableCell>
+                <TableCell>{entry.endTime}</TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={3} className="h-24 text-center">
+              <TableCell colSpan={4} className="h-24 text-center">
                 No timesheet entries found. Click "Sync Calendar" to fetch events.
               </TableCell>
             </TableRow>

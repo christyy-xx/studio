@@ -43,38 +43,13 @@ export default function TimesheetsPage() {
       }
 
       const formattedEntries: TimesheetEntry[] = events.map((event, index) => {
-          const dateStr = event['Date ']?.trim();
-          const startTimeStr = event['Start Time']?.trim();
-          const endTimeStr = event['End Time']?.trim();
-
-          let durationString = 'N/A';
-          if (dateStr && startTimeStr && endTimeStr) {
-            const startDateTime = new Date(`${dateStr}T${startTimeStr}`);
-            const endDateTime = new Date(`${dateStr}T${endTimeStr}`);
-            
-            if (!isNaN(startDateTime.getTime()) && !isNaN(endDateTime.getTime()) && endDateTime > startDateTime) {
-              const diffInMinutes = Math.round((endDateTime.getTime() - startDateTime.getTime()) / (1000 * 60));
-              
-              if (diffInMinutes > 0) {
-                const hours = Math.floor(diffInMinutes / 60);
-                const minutes = diffInMinutes % 60;
-                
-                const hourPart = hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : '';
-                const minutePart = minutes > 0 ? `${minutes} mins` : '';
-                
-                durationString = [hourPart, minutePart].filter(Boolean).join(' ');
-              } else {
-                 durationString = '0 mins';
-              }
-            }
-          }
-        
-          return {
-            id: String(index + 1),
-            date: dateStr || 'N/A',
-            task: event['Event Title'] || 'Unnamed Task',
-            duration: durationString,
-          };
+        return {
+          id: String(index + 1),
+          date: event['Date ']?.trim() || 'N/A',
+          eventTitle: event['Event Title'] || 'Unnamed Task',
+          startTime: event['Start Time']?.trim() || 'N/A',
+          endTime: event['End Time']?.trim() || 'N/A',
+        };
       }).filter(entry => entry.date !== 'N/A');
       
       setEntries(formattedEntries);
@@ -132,7 +107,7 @@ export default function TimesheetsPage() {
         <CardHeader>
           <CardTitle>Synced Events</CardTitle>
           <CardDescription>
-            A log of tasks and their durations from your connected calendars.
+            A log of events from your connected calendars.
           </CardDescription>
         </CardHeader>
         <CardContent>
