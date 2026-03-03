@@ -49,6 +49,7 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error('Error in webhook proxy route:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred in the webhook proxy.';
+    return new NextResponse(errorMessage, { status: 500 });
   }
 }
