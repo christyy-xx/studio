@@ -41,7 +41,7 @@ export default function InterviewsPage() {
         return;
       }
       
-      const responseData = await response.json();
+      const responseData = JSON.parse(responseText);
       const candidates: WebhookInterviewResult[] = responseData.Candidates || [];
 
       if (!candidates || candidates.length === 0) {
