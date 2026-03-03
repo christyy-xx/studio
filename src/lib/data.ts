@@ -47,25 +47,3 @@ export const notifications: Notification[] = [
   { id: '3', type: 'system', message: 'Contract for Sneha Reddy has been generated.', time: '2h ago' },
   { id: '4', type: 'email', message: 'Your job post for "Senior React Developer" is now live.', time: '1d ago' },
 ];
-
-export const contractTemplate = `EMPLOYMENT AGREEMENT
-
-This Employment Agreement ("Agreement") is made and entered into as of [Start Date], by and between HRAi Corp. ("Company"), and [Candidate Name] ("Employee").
-
-1.  **Position**. The Company agrees to employ the Employee in the position of [Job Title].
-2.  **Compensation**. The Company will pay the Employee an annual salary of $[Salary], payable in accordance with the Company's standard payroll practices.
-3.  **Start Date**. The Employee's employment will begin on [Start Date].
-4.  **Confidentiality**. The Employee agrees to maintain the confidentiality of all proprietary information of the Company.
-5.  **Termination**. This Agreement may be terminated by either party with 30 days written notice.
-
-[Additional Clauses]
-
-IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
-
-HRAi Corp.
-_________________
-
-Employee
-_________________
-[Candidate Name]
-`;

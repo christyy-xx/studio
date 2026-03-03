@@ -91,8 +91,8 @@ export default async function DashboardPage() {
             </Link>
             <Link href="/dashboard/contracts">
             <div className="rounded-lg border bg-card text-card-foreground p-4 hover:bg-muted/50 transition-colors">
-              <h3 className="font-semibold">Generate Contract</h3>
-              <p className="text-sm text-muted-foreground">Create a new employment contract for a candidate.</p>
+              <h3 className="font-semibold">View Contract Data</h3>
+              <p className="text-sm text-muted-foreground">Fetch contract data from your sources.</p>
             </div>
             </Link>
             <Link href="/dashboard/interviews">

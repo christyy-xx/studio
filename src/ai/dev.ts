@@ -3,4 +3,3 @@ config();
 
 import '@/ai/flows/generate-structured-job-post.ts';
 import '@/ai/flows/generate-interview-summary-and-score.ts';
-import '@/ai/flows/generate-personalized-contract.ts';
