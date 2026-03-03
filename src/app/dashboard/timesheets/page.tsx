@@ -4,14 +4,18 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Plus } from "lucide-react";
+import { TimesheetTable } from "@/components/dashboard/timesheet-table";
+import type { TimesheetEntry, WebhookTimesheetEvent } from '@/lib/types';
 
 export default function TimesheetsPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [entries, setEntries] = useState<TimesheetEntry[]>([]);
   const { toast } = useToast();
 
   const handleSyncCalendar = async () => {
     setIsLoading(true);
+    setEntries([]);
     try {
       const response = await fetch('/api/webhook', {
         method: 'POST',
@@ -25,10 +29,59 @@ export default function TimesheetsPage() {
         const errorText = await response.text();
         throw new Error(errorText || 'Webhook request failed.');
       }
+      
+      const responseData = await response.json();
+      const events: WebhookTimesheetEvent[] = responseData.Events || [];
+      
+      if (!events || events.length === 0) {
+        toast({
+            title: "No events found",
+            description: "The webhook returned an empty list of events.",
+        });
+        setEntries([]);
+        return;
+      }
+
+      const formattedEntries: TimesheetEntry[] = events.map((event, index) => {
+          const dateStr = event['Date ']?.trim();
+          const startTimeStr = event['Start Time']?.trim();
+          const endTimeStr = event['End Time']?.trim();
+
+          let durationString = 'N/A';
+          if (dateStr && startTimeStr && endTimeStr) {
+            const startDateTime = new Date(`${dateStr}T${startTimeStr}`);
+            const endDateTime = new Date(`${dateStr}T${endTimeStr}`);
+            
+            if (!isNaN(startDateTime.getTime()) && !isNaN(endDateTime.getTime()) && endDateTime > startDateTime) {
+              const diffInMinutes = Math.round((endDateTime.getTime() - startDateTime.getTime()) / (1000 * 60));
+              
+              if (diffInMinutes > 0) {
+                const hours = Math.floor(diffInMinutes / 60);
+                const minutes = diffInMinutes % 60;
+                
+                const hourPart = hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : '';
+                const minutePart = minutes > 0 ? `${minutes} mins` : '';
+                
+                durationString = [hourPart, minutePart].filter(Boolean).join(' ');
+              } else {
+                 durationString = '0 mins';
+              }
+            }
+          }
+        
+          return {
+            id: String(index + 1),
+            date: dateStr || 'N/A',
+            task: event['Event Title'] || 'Unnamed Task',
+            duration: durationString,
+          };
+      }).filter(entry => entry.date !== 'N/A');
+      
+      setEntries(formattedEntries);
 
       toast({
         title: "Success!",
-        description: "Calendar sync triggered successfully via webhook.",
+        description: "Calendar sync completed successfully.",
       });
 
     } catch (error: any) {
@@ -36,6 +89,8 @@ export default function TimesheetsPage() {
       let description = 'Could not trigger webhook. Please try again.';
       if (error.message.includes('404')) {
         description = 'The webhook returned a 404 Not Found error. Please check that the URL is correct and the webhook is active.';
+      } else if(error instanceof SyntaxError) {
+        description = 'Received an invalid response from the webhook. Please check the webhook output format.'
       } else {
         description = error.message;
       }
@@ -51,22 +106,18 @@ export default function TimesheetsPage() {
 
   return (
     <div className="space-y-6">
-      <header>
+       <header className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Timesheet Management</h1>
           <p className="text-muted-foreground">
-            Sync events from Google Calendar.
+            Review synced events from Google Calendar and manage your team's time.
           </p>
         </div>
-      </header>
-      <Card className="animate-fade-in">
-        <CardHeader>
-          <CardTitle>Sync Calendar</CardTitle>
-          <CardDescription>
-            Click the button below to send a request to your n8n webhook to sync your calendar events.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <div className="flex items-center gap-2">
+            <Button variant="outline">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Entry
+            </Button>
             <Button onClick={handleSyncCalendar} disabled={isLoading} className="bg-accent text-accent-foreground hover:bg-accent/90">
                 {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -75,6 +126,23 @@ export default function TimesheetsPage() {
                 )}
                 Sync Calendar
             </Button>
+        </div>
+      </header>
+      <Card className="animate-fade-in">
+        <CardHeader>
+          <CardTitle>Synced Events</CardTitle>
+          <CardDescription>
+            A log of tasks and their durations from your connected calendars.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+            {isLoading ? (
+                 <div className="flex items-center justify-center h-40">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                </div>
+            ) : (
+                <TimesheetTable entries={entries} />
+            )}
         </CardContent>
       </Card>
     </div>

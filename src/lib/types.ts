@@ -43,3 +43,10 @@ export type WebhookInterviewResult = {
   'Communication Score': number;
   'Summary': string;
 };
+
+export type WebhookTimesheetEvent = {
+  'Date '?: string;
+  'Event Title'?: string;
+  'Start Time'?: string;
+  'End Time'?: string;
+};

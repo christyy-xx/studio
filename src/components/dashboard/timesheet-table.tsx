@@ -31,7 +31,7 @@ export function TimesheetTable({ entries }: { entries: TimesheetEntry[] }) {
           ) : (
             <TableRow>
               <TableCell colSpan={3} className="h-24 text-center">
-                No timesheet entries found.
+                No timesheet entries found. Click "Sync Calendar" to fetch events.
               </TableCell>
             </TableRow>
           )}
