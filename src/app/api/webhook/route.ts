@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         webhookUrl = 'https://abu.awsaibot.com/webhook-test/contracts';
     } else {
       // This is for the "Job Posting" page
-      webhookUrl = 'https://abu.awsaibot.com/webhook-test/firebase-job-post';
+      webhookUrl = 'https://abu.awsaibot.com/webhook/firebase-job-post';
     }
 
     const response = await fetch(webhookUrl, {
