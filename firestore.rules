@@ -1,0 +1,200 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. All data is considered private and is nested within a user-specific data tree. Access is granted only to the authenticated user who owns that specific data tree, ensuring that users can only access their own information.
+ *
+ * Data Structure: The entire Firestore database is structured hierarchically, starting with the `/users/{userId}` collection. All other data entities, such as job posts, candidates, and notifications, are stored in subcollections under the user's primary document. This segregation is the cornerstone of the security model.
+ *
+ * Key Security Decisions:
+ * - Default Deny: All access is denied by default. Rules only explicitly grant permissions.
+ * - No Public Data: There are no publicly readable collections. Every read and write operation requires an authenticated user.
+ * - User Isolation: Users are strictly isolated from one another. It is impossible for one user to read, write, or even know about the existence of another user's data. User listing is explicitly disallowed.
+ *
+ * Denormalization for Authorization: To ensure fast and secure rule evaluation, an ownership field (e.g., `userId`) is denormalized and stored directly on every document. This avoids slow and costly `get()` calls to parent documents for authorization checks. For instance, a rule on an 'Interview' document can directly check the `userId` field on that document without needing to look up the parent 'Candidate' or 'User' document.
+ *
+ * Structural Segregation: The use of a top-level `/users/{userId}` path for all user-specific content is a deliberate choice. This structure makes it easy to write secure list queries, as any query for a subcollection is automatically scoped to the currently authenticated user's data tree.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------------
+    // Helper Functions
+    // ------------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the given userId.
+     * This is the primary function for enforcing the ownership model.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks for ownership on an existing document. Used for update and delete
+     * operations to prevent acting on non-existent data.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * CREATE: Validates that the new UserProfile document's internal 'id'
+     * matches the document's ID (the user's UID).
+     */
+    function hasCorrectIdOnCreate(userId) {
+      return request.resource.data.id == userId;
+    }
+
+    /**
+     * UPDATE: Ensures the internal 'id' field of a UserProfile is immutable.
+     */
+    function isIdImmutable() {
+      return request.resource.data.id == resource.data.id;
+    }
+
+    /**
+     * CREATE: Validates that a new subcollection document has its 'userId'
+     * field set correctly to the owner's UID from the path.
+     */
+    function hasCorrectUserIdOnCreate(userId) {
+      return request.resource.data.userId == userId;
+    }
+
+    /**
+     * UPDATE: Ensures the 'userId' field on a subcollection document is immutable.
+     */
+    function isUserIdImmutable() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    /**
+     * CREATE: Validates that a new nested document (e.g., Interview) has its
+     * 'candidateId' field set to the parent candidate's ID from the path.
+     */
+    function hasCorrectCandidateIdOnCreate(candidateId) {
+      return request.resource.data.candidateId == candidateId;
+    }
+
+    /**
+     * UPDATE: Ensures the 'candidateId' field on a nested document is immutable.
+     */
+    function isCandidateIdImmutable() {
+      return request.resource.data.candidateId == resource.data.candidateId;
+    }
+
+    // ------------------------------------------------------------------------
+    // Collection Rules
+    // ------------------------------------------------------------------------
+
+    /**
+     * @description Controls access to a user's own profile document.
+     * @path /users/{userId}
+     * @allow (create) An authenticated user creating their own profile document, e.g., `db.collection('users').doc('auth.uid').set({...})`.
+     * @deny (get) A user trying to read another user's profile, e.g., `db.collection('users').doc('another-user-id').get()`.
+     * @principle Restricts access to a user's own data tree and allows self-creation of a profile.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Disallow listing of all users
+      allow create: if isOwner(userId) && hasCorrectIdOnCreate(userId);
+      allow update: if isExistingOwner(userId) && isIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to job posts owned by a user.
+     * @path /users/{userId}/jobPosts/{jobPostId}
+     * @allow (create) An authenticated user creating a job post under their own ID, e.g., `db.collection('users/auth.uid/jobPosts').add({...})`.
+     * @deny (list) A user trying to list job posts belonging to another user.
+     * @principle Enforces document ownership for all operations within a user-specific subcollection.
+     */
+    match /users/{userId}/jobPosts/{jobPostId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && hasCorrectUserIdOnCreate(userId);
+      allow update: if isExistingOwner(userId) && isUserIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to candidate profiles managed by a user.
+     * @path /users/{userId}/candidates/{candidateId}
+     * @allow (list) An authenticated user listing their own managed candidates, e.g., `db.collection('users/auth.uid/candidates').get()`.
+     * @deny (update) A user trying to update a candidate profile owned by someone else.
+     * @principle Enforces document ownership for all operations within a user-specific subcollection.
+     */
+    match /users/{userId}/candidates/{candidateId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && hasCorrectUserIdOnCreate(userId);
+      allow update: if isExistingOwner(userId) && isUserIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to interview records for a specific candidate.
+     * @path /users/{userId}/candidates/{candidateId}/interviews/{interviewId}
+     * @allow (get) The owning user reading an interview record for one of their candidates.
+     * @deny (create) A user trying to create an interview record under another user's candidate.
+     * @principle Enforces ownership at the user level and validates relational integrity with the parent candidate.
+     */
+    match /users/{userId}/candidates/{candidateId}/interviews/{interviewId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && hasCorrectUserIdOnCreate(userId) && hasCorrectCandidateIdOnCreate(candidateId);
+      allow update: if isExistingOwner(userId) && isUserIdImmutable() && isCandidateIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to contract records for a specific candidate.
+     * @path /users/{userId}/candidates/{candidateId}/contracts/{contractId}
+     * @allow (delete) The owning user deleting a contract record for one of their candidates.
+     * @deny (list) A user trying to list contracts belonging to another user's candidate.
+     * @principle Enforces ownership at the user level and validates relational integrity with the parent candidate.
+     */
+    match /users/{userId}/candidates/{candidateId}/contracts/{contractId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && hasCorrectUserIdOnCreate(userId) && hasCorrectCandidateIdOnCreate(candidateId);
+      allow update: if isExistingOwner(userId) && isUserIdImmutable() && isCandidateIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to timesheet entries owned by a user.
+     * @path /users/{userId}/timesheetEntries/{timesheetEntryId}
+     * @allow (create) An authenticated user creating a timesheet entry under their own ID.
+     * @deny (get) A user trying to read a timesheet entry belonging to another user.
+     * @principle Enforces document ownership for all operations within a user-specific subcollection.
+     */
+    match /users/{userId}/timesheetEntries/{timesheetEntryId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && hasCorrectUserIdOnCreate(userId);
+      allow update: if isExistingOwner(userId) && isUserIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to notifications intended for a specific user.
+     * @path /users/{userId}/notifications/{notificationId}
+     * @allow (update) An authenticated user updating one of their own notifications (e.g., marking as read).
+     * @deny (create) A user attempting to create a notification for another user.
+     * @principle Enforces document ownership for all operations within a user-specific subcollection.
+     */
+    match /users/{userId}/notifications/{notificationId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && hasCorrectUserIdOnCreate(userId);
+      allow update: if isExistingOwner(userId) && isUserIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
