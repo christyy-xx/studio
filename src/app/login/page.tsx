@@ -20,7 +20,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const auth = useAuth();
-  const { user, isUserLoading, userError } = useUser();
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { toast } = useToast();
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -39,26 +39,37 @@ export default function LoginPage() {
     }
   }, [user, isUserLoading, router]);
 
-  useEffect(() => {
-    if(userError) {
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Error',
-        description: userError.message,
-      });
-      setIsSigningIn(false);
-    }
-  }, [userError, toast]);
-  
-
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setIsSigningIn(true);
-    initiateEmailSignIn(auth, values.email, values.password);
+    initiateEmailSignIn(auth, values.email, values.password)
+      .catch((error) => {
+        toast({
+          variant: 'destructive',
+          title: 'Authentication Error',
+          description: error.message,
+        });
+      })
+      .finally(() => {
+        setIsSigningIn(false);
+      });
   };
 
   const handleGoogleSignIn = () => {
     setIsSigningIn(true);
-    initiateGoogleSignIn(auth);
+    initiateGoogleSignIn(auth)
+      .catch((error) => {
+        // Don't show an error toast if the user simply closes the popup.
+        if (error.code !== 'auth/popup-closed-by-user') {
+          toast({
+            variant: 'destructive',
+            title: 'Authentication Error',
+            description: error.message,
+          });
+        }
+      })
+      .finally(() => {
+        setIsSigningIn(false);
+      });
   };
   
   if (isUserLoading || user) {
