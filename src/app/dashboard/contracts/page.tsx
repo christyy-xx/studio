@@ -19,8 +19,8 @@ function ContractDataTable({ data }: { data: WebhookContract[] }) {
     );
   }
 
-  const getStatusVariant = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' => {
-    switch (status?.toLowerCase()) {
+  const getStatusVariant = (status: any): 'default' | 'secondary' | 'destructive' | 'outline' => {
+    switch (String(status ?? '').toLowerCase()) {
       case 'sent for signature':
         return 'secondary';
       case 'signed':
@@ -51,7 +51,7 @@ function ContractDataTable({ data }: { data: WebhookContract[] }) {
               </TableCell>
               <TableCell className="text-center">
                 <Badge variant={getStatusVariant(contract['Status'])}>
-                  {contract['Status']}
+                  {String(contract['Status'] ?? 'N/A')}
                 </Badge>
               </TableCell>
             </TableRow>
