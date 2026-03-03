@@ -54,6 +54,5 @@ export type WebhookTimesheetEvent = {
 
 export type WebhookContract = {
   'Candidate Name': string;
-  'Job Title': string;
   'Status': string;
 };

@@ -40,7 +40,6 @@ function ContractDataTable({ data }: { data: WebhookContract[] }) {
         <TableHeader>
           <TableRow>
             <TableHead>Candidate Name</TableHead>
-            <TableHead>Job Title</TableHead>
             <TableHead className="text-center">Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -50,7 +49,6 @@ function ContractDataTable({ data }: { data: WebhookContract[] }) {
               <TableCell>
                 <span className="font-medium">{contract['Candidate Name']}</span>
               </TableCell>
-              <TableCell>{contract['Job Title']}</TableCell>
               <TableCell className="text-center">
                 <Badge variant={getStatusVariant(contract['Status'])}>
                   {contract['Status']}
@@ -88,8 +86,8 @@ export default function ContractsPage() {
       }
 
       const responseData = await response.json();
-      // Assuming the webhook returns an object with a 'Contracts' key
-      const contractData: WebhookContract[] = responseData.Contracts || [];
+      // Assuming the webhook returns an object with a 'Candidates' key
+      const contractData: WebhookContract[] = responseData.Candidates || [];
 
       if (!contractData || contractData.length === 0) {
         toast({
