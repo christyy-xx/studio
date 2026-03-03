@@ -30,7 +30,18 @@ export default function TimesheetsPage() {
         throw new Error(errorText || 'Webhook request failed.');
       }
       
-      const responseData = await response.json();
+      const responseText = await response.text();
+      if (!responseText) {
+          setEntries([]);
+          toast({
+              title: "No events found",
+              description: "The webhook returned an empty response."
+          });
+          setIsLoading(false);
+          return;
+      }
+
+      const responseData = JSON.parse(responseText);
       const events: WebhookTimesheetEvent[] = responseData.Events || [];
       
       if (!events || events.length === 0) {
@@ -39,6 +50,7 @@ export default function TimesheetsPage() {
             description: "The webhook returned an empty list of events.",
         });
         setEntries([]);
+        setIsLoading(false);
         return;
       }
 
@@ -62,10 +74,10 @@ export default function TimesheetsPage() {
     } catch (error: any) {
       console.error(error);
       let description = 'Could not trigger webhook. Please try again.';
-      if (error.message.includes('404')) {
-        description = 'The webhook returned a 404 Not Found error. Please check that the URL is correct and the webhook is active.';
-      } else if(error instanceof SyntaxError) {
+      if (error instanceof SyntaxError) {
         description = 'Received an invalid response from the webhook. Please check the webhook output format.'
+      } else if (error.message.includes('404')) {
+        description = 'The webhook returned a 404 Not Found error. Please check that the URL is correct and the webhook is active.';
       } else {
         description = error.message;
       }

@@ -30,6 +30,17 @@ export default function InterviewsPage() {
         throw new Error(errorText || 'Webhook request failed.');
       }
 
+      const responseText = await response.text();
+      if (!responseText) {
+        setInterviews([]);
+        toast({
+            title: "No data returned",
+            description: "The webhook returned an empty response.",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       const responseData = await response.json();
       const candidates: WebhookInterviewResult[] = responseData.Candidates || [];
 
@@ -39,6 +50,7 @@ export default function InterviewsPage() {
             description: "The webhook returned an empty list of candidates.",
         });
         setInterviews([]);
+        setIsLoading(false);
         return;
       }
       
@@ -61,7 +73,9 @@ export default function InterviewsPage() {
     } catch (error) {
       console.error(error);
       let description = 'Could not trigger webhook. Please try again.';
-      if (error instanceof Error) {
+      if (error instanceof SyntaxError) {
+          description = "Received an invalid response from the webhook. Please check the webhook's output format.";
+      } else if (error instanceof Error) {
         if (error.message.includes('404')) {
             description = 'The webhook returned a 404 Not Found error. Please check that the URL is correct and the webhook is active.'
         } else {
