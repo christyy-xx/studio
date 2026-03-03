@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw, Plus } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import { TimesheetTable } from "@/components/dashboard/timesheet-table";
 import type { TimesheetEntry, WebhookTimesheetEvent } from '@/lib/types';
 
@@ -45,7 +45,7 @@ export default function TimesheetsPage() {
       const formattedEntries: TimesheetEntry[] = events.map((event, index) => {
         return {
           id: String(index + 1),
-          date: event['Date ']?.trim() || 'N/A',
+          date: event['Date']?.trim() || 'N/A',
           eventTitle: event['Event Title'] || 'Unnamed Task',
           startTime: event['Start Time']?.trim() || 'N/A',
           endTime: event['End Time']?.trim() || 'N/A',
@@ -89,10 +89,6 @@ export default function TimesheetsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-            <Button variant="outline">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Entry
-            </Button>
             <Button onClick={handleSyncCalendar} disabled={isLoading} className="bg-accent text-accent-foreground hover:bg-accent/90">
                 {isLoading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

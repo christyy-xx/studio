@@ -46,7 +46,7 @@ export type WebhookInterviewResult = {
 };
 
 export type WebhookTimesheetEvent = {
-  'Date '?: string;
+  'Date'?: string;
   'Event Title'?: string;
   'Start Time'?: string;
   'End Time'?: string;
