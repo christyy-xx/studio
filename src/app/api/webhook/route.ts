@@ -18,7 +18,7 @@ export async function POST(request: Request) {
         webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/Employee';
     } else if (body.event === 'get-contract-data-trigger') {
         // This is for the "Contract Data" page
-        webhookUrl = 'https://abu.awsaibot.com/webhook-test/contracts';
+        webhookUrl = 'https://abu.awsaibot.com/webhook/contracts';
     } else {
       // This is for the "Job Posting" page
       webhookUrl = 'https://abu.awsaibot.com/webhook/firebase-job-post';
