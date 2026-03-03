@@ -13,6 +13,9 @@ export async function POST(request: Request) {
     } else if (body.event === 'get-interview-data-trigger') {
         // This is for the "AI Interviews" page
         webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/candidateresult';
+    } else if (body.event === 'sync-calendar-trigger') {
+        // This is for the "Timesheets" page
+        webhookUrl = 'https://votim.app.n8n.cloud/webhook-test/Employee';
     } else {
       // This is for the "Job Posting" page
       webhookUrl = 'https://likah123.app.n8n.cloud/webhook-test/firebase-job-post';
