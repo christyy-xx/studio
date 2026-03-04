@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       webhookUrl = 'https://abu.awsaibot.com/webhook/candidate';
     } else if (body.event === 'get-interview-data-trigger') {
         // This is for the "AI Interviews" page
-        webhookUrl = 'https://abu.awsaibot.com/webhook/candidate';
+        webhookUrl = 'https://abu.awsaibot.com/webhook/candidateresult';
     } else if (body.event === 'sync-calendar-trigger') {
         // This is for the "Timesheets" page
         webhookUrl = 'https://abu.awsaibot.com/webhook/Employee';
