@@ -57,7 +57,9 @@ export function GetDataButton({ onDataReceived, setIsLoading, isLoading }: GetDa
       if (error instanceof SyntaxError) {
           description = "Received an invalid response from the webhook. Please check the webhook's output format.";
       } else if (error instanceof Error) {
-        if (error.message.includes('404')) {
+        if (error.message.includes('fetch failed')) {
+            description = "Connection to the webhook failed. Please check your network connection and ensure the webhook service is available at the configured URL.";
+        } else if (error.message.includes('404')) {
             description = 'The webhook returned a 404 Not Found error. Please check that the URL is correct and the webhook is active.'
         } else {
             description = error.message;
@@ -65,7 +67,7 @@ export function GetDataButton({ onDataReceived, setIsLoading, isLoading }: GetDa
       }
       toast({
         variant: 'destructive',
-        title: 'An error occurred.',
+        title: 'Webhook Connection Error',
         description: description,
       });
     } finally {
