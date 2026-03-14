@@ -43,7 +43,7 @@ export function GetDataButton({ onDataReceived, setIsLoading, isLoading }: GetDa
       }
       
       const responseData = JSON.parse(responseText);
-      const candidates = responseData.Candidates || [];
+      const candidates = Array.isArray(responseData) ? responseData : responseData.Candidates || [];
       onDataReceived(candidates);
 
       toast({

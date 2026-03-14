@@ -97,7 +97,7 @@ export default function ContractsPage() {
       }
       
       const responseData = JSON.parse(responseText);
-      const contractData: WebhookContract[] = responseData.Contracts || [];
+      const contractData: WebhookContract[] = Array.isArray(responseData) ? responseData : responseData.Contracts || [];
 
       if (!contractData || contractData.length === 0) {
         toast({
