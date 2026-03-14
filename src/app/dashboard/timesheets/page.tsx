@@ -42,7 +42,7 @@ export default function TimesheetsPage() {
       }
 
       const responseData = JSON.parse(responseText);
-      const events: WebhookTimesheetEvent[] = Array.isArray(responseData) ? responseData : responseData.Employees || [];
+      const events: WebhookTimesheetEvent[] = Array.isArray(responseData) ? responseData : responseData.Employees || responseData.Employee || [];
       
       if (!events || events.length === 0) {
         toast({
