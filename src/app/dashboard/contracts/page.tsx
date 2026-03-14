@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import type { WebhookContract } from '@/lib/types';
+import type { WebhookContract, WebhookCandidate } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,8 +29,10 @@ function ContractDataTable({ data }: { data: WebhookContract[] }) {
         return 'destructive';
       case 'draft':
         return 'outline';
-      default:
+      case 'shortlisted':
         return 'secondary';
+      default:
+        return 'outline';
     }
   }
 
@@ -97,9 +99,9 @@ export default function ContractsPage() {
       }
       
       const responseData = JSON.parse(responseText);
-      const contractData: WebhookContract[] = Array.isArray(responseData) ? responseData : responseData.Contracts || [];
+      const candidateData: WebhookCandidate[] = Array.isArray(responseData) ? responseData : responseData.Candidates || [];
 
-      if (!contractData || contractData.length === 0) {
+      if (!candidateData || candidateData.length === 0) {
         toast({
             title: "No data returned",
             description: "The webhook returned an empty list of contracts.",
@@ -108,6 +110,11 @@ export default function ContractsPage() {
         setIsLoading(false);
         return;
       }
+
+      const contractData: WebhookContract[] = candidateData.map(c => ({
+        'Candidate Name': c['Candidate Name'],
+        'Status': c['Shortlisted'] ? 'Shortlisted' : 'Not Shortlisted'
+      }));
       
       setContracts(contractData);
 
