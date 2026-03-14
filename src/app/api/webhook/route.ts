@@ -15,7 +15,7 @@ export async function POST(request: Request) {
         webhookUrl = 'https://abu.awsaibot.com/webhook-test/candidateresult';
     } else if (body.event === 'sync-calendar-trigger') {
         // This is for the "Timesheets" page
-        webhookUrl = 'https://abu.awsaibot.com/webhook-test/employee';
+        webhookUrl = 'https://abu.awsaibot.com/webhook-test/Employee';
     } else if (body.event === 'get-contract-data-trigger') {
         // This is for the "Contract Data" page
         webhookUrl = 'https://abu.awsaibot.com/webhook-test/contracts';
