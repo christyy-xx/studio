@@ -42,7 +42,16 @@ export default function InterviewsPage() {
       }
       
       const responseData = JSON.parse(responseText);
-      const candidates: WebhookInterviewResult[] = Array.isArray(responseData) ? responseData : responseData.Candidates || [];
+      
+      let candidates: WebhookInterviewResult[] = [];
+      if (Array.isArray(responseData)) {
+        candidates = responseData;
+      } else if (typeof responseData === 'object' && responseData !== null) {
+        const arrayValue = Object.values(responseData).find(value => Array.isArray(value));
+        if (arrayValue) {
+            candidates = arrayValue as WebhookInterviewResult[];
+        }
+      }
 
       if (!candidates || candidates.length === 0) {
         toast({

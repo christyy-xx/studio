@@ -42,9 +42,16 @@ export default function TimesheetsPage() {
       }
 
       const responseData = JSON.parse(responseText);
-      const events: WebhookTimesheetEvent[] = Array.isArray(responseData) 
-        ? responseData 
-        : responseData.data || responseData.Employees || responseData.Employee || responseData.employees || responseData.employee || [];
+      
+      let events: WebhookTimesheetEvent[] = [];
+      if (Array.isArray(responseData)) {
+        events = responseData;
+      } else if (typeof responseData === 'object' && responseData !== null) {
+        const arrayValue = Object.values(responseData).find(value => Array.isArray(value));
+        if (arrayValue) {
+          events = arrayValue as WebhookTimesheetEvent[];
+        }
+      }
       
       if (!events || events.length === 0) {
         toast({
