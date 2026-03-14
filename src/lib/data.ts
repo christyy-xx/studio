@@ -9,7 +9,6 @@ export const interviews: Interview[] = [
     candidateName: 'Aarav Sharma',
     status: 'Completed',
     performanceScore: 85,
-    technicalScore: 90,
     communicationScore: 80,
     summary: 'Strong technical skills but needs to improve on situational questions. Good fit for the team culture.'
   },
@@ -18,7 +17,6 @@ export const interviews: Interview[] = [
     candidateName: 'Priya Patel',
     status: 'Scheduled',
     performanceScore: 0,
-    technicalScore: 0,
     communicationScore: 0,
     summary: 'Interview scheduled for next week.'
   },
@@ -27,7 +25,6 @@ export const interviews: Interview[] = [
     candidateName: 'Rohan Gupta',
     status: 'Completed',
     performanceScore: 95,
-    technicalScore: 92,
     communicationScore: 98,
     summary: 'Excellent communication and problem-solving abilities. Highly recommended for the role.'
   }

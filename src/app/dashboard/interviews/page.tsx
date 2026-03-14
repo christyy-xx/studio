@@ -59,7 +59,6 @@ export default function InterviewsPage() {
         candidateName: candidate['Candidate Name'],
         status: 'Completed', // Assuming all results are for completed interviews
         performanceScore: candidate['Fit Score'],
-        technicalScore: candidate['Technical Score'],
         communicationScore: candidate['Communication Score'],
         summary: candidate['Summary'],
       }));

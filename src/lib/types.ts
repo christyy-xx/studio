@@ -11,7 +11,6 @@ export type Interview = {
   candidateName: string;
   status: 'Scheduled' | 'Completed' | 'Canceled';
   performanceScore: number;
-  technicalScore: number;
   communicationScore: number;
   summary: string;
 };
@@ -40,7 +39,6 @@ export type WebhookCandidate = {
 export type WebhookInterviewResult = {
   'Candidate Name': string;
   'Fit Score': number;
-  'Technical Score': number;
   'Communication Score': number;
   'Summary': string;
 };

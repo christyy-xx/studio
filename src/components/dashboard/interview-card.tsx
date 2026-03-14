@@ -32,13 +32,6 @@ export function InterviewCard({ interview }: { interview: Interview }) {
                 </div>
               </div>
               <div>
-                <h4 className="text-sm font-medium mb-2">Technical Score</h4>
-                <div className="flex items-center gap-2">
-                  <Progress value={interview.technicalScore} className="w-full" />
-                  <span className="font-semibold">{interview.technicalScore}%</span>
-                </div>
-              </div>
-              <div>
                 <h4 className="text-sm font-medium mb-2">Communication Score</h4>
                 <div className="flex items-center gap-2">
                   <Progress value={interview.communicationScore} className="w-full" />
